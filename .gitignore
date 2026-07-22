@@ -1,0 +1,22 @@
+# Virtual Environment
+venv/
+
+# Dataset
+data/Dataset/
+
+# Trained Model
+models/best_model.pth
+
+# Temporary uploads
+uploads/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
