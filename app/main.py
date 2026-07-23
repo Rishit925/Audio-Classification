@@ -1,8 +1,8 @@
 import streamlit as st
-import requests
 import time
-
-API_URL = "http://127.0.0.1:8000/predict"
+from app.predict import predict
+import tempfile
+import os
 
 st.set_page_config(
     page_title="Quran Reciter Classification",
@@ -119,77 +119,66 @@ if uploaded_file:
 
             with st.spinner("Running CNN Inference..."):
 
-                files = {
-                    "file": (
-                        uploaded_file.name,
-                        uploaded_file.getvalue(),
-                        "audio/wav"
-                    )
-                }
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
+                    tmp_file.write(uploaded_file.getvalue())
+                    temp_audio_path = tmp_file.name
 
-                response = requests.post(
-                    API_URL,
-                    files=files
-                )
+                result = predict(temp_audio_path)
+
+                os.remove(temp_audio_path)
 
             end = time.time()
 
-            if response.status_code == 200:
+            confidence = result["confidence"]
 
-                result = response.json()
+            reciter = result["reciter"].replace("_", " ")
 
-                confidence = result["confidence"]
+            st.success("✅ Prediction Completed")
 
-                reciter = result["reciter"].replace("_", " ")
-
-                st.success("✅ Prediction Completed")
-
-                st.metric(
+            st.metric(
                     "Predicted Reciter",
                     reciter
                 )
 
-                st.progress(confidence / 100)
+            st.progress(confidence / 100)
 
-                if confidence >= 90:
-                    confidence_level = "🟢 High"
-                    message = "The model is highly confident in this prediction."
+            if confidence >= 90:
+                confidence_level = "🟢 High"
+                message = "The model is highly confident in this prediction."
 
-                elif confidence >= 70:
-                    confidence_level = "🟡 Moderate"
-                    message = "The prediction is reasonably confident."
+            elif confidence >= 70:
+                confidence_level = "🟡 Moderate"
+                message = "The prediction is reasonably confident."
 
-                else:
-                    confidence_level = "🔴 Low"
-                    message = (
+            else:
+                confidence_level = "🔴 Low"
+                message = (
                         "The model has lower confidence. "
                         "Consider verifying with another audio sample."
                     )
 
-                col1, col2 = st.columns(2)
+            col1, col2 = st.columns(2)
 
-                with col1:
+            with col1:
 
-                    st.metric(
+                st.metric(
                         "Prediction Confidence",
                         confidence_level
                     )
 
-                with col2:
+            with col2:
 
-                    st.metric(
+                st.metric(
                         "Processing Time",
                         f"{(end-start)*1000:.0f} ms"
                     )
 
-                st.caption(message)
+            st.caption(message)
 
-            else:
-
-                st.error("Prediction Failed. Please try again.")
+            
 
 st.divider()
 
 st.caption(
-    "Built using PyTorch • FastAPI • Streamlit"
+    "Built using PyTorch • Hugging Face Hub • Streamlit"
 )
