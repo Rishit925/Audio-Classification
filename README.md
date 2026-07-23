@@ -598,7 +598,6 @@ Some possible future enhancements include:
 ### Connect with me
 
 - GitHub: https://github.com/Rishit925
-- LinkedIn: *(Add your LinkedIn profile here)*
 
 ---
 
