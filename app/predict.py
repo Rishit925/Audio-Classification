@@ -1,10 +1,10 @@
 import torch
 import torch.nn.functional as F
 
-from app.model import load_model
-from app.preprocess import preprocess_audio
-from app.class_names import NUM_CLASSES, get_class_name
-from app.config import MODEL_PATH
+from model import load_model
+from preprocess import preprocess_audio
+from class_names import NUM_CLASSES, get_class_name
+from config import MODEL_PATH
 
 
 # Select Device

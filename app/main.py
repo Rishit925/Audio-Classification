@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from app.predict import predict
+from predict import predict
 import tempfile
 import os
 
