@@ -1,4 +1,9 @@
-MODEL_PATH = "models/best_model.pth"
+from huggingface_hub import hf_hub_download
+
+MODEL_PATH = hf_hub_download(
+    repo_id="Rishit925/Audio-Classification",
+    filename="best_model.pth"
+)
 
 SAMPLE_RATE = 22050
 DURATION = 5
